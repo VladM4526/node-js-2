@@ -13,7 +13,13 @@ export const contactAddSchema = Joi.object({
 });
 
 export const contactUpdateSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.string(),
+  name: Joi.string().required().messages({
+    "any.required": `name must be exist`,
+  }),
+  email: Joi.string().required().messages({
+    "any.required": `email must be exist`,
+  }),
+  phone: Joi.string().required().messages({
+    "any.required": `phone must be exist`,
+  }),
 });

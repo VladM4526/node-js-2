@@ -1,5 +1,3 @@
-// const fs = require('fs/promises')
-
 const listContacts = async () => {};
 
 const getContactById = async (contactId) => {};
@@ -10,7 +8,9 @@ const addContact = async (body) => {};
 
 const updateContact = async (contactId, body) => {};
 
-module.exports = {
+module.exports = {};
+
+export default {
   listContacts,
   getContactById,
   removeContact,

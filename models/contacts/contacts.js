@@ -50,7 +50,19 @@ const addContact = async ({ name, email, phone }) => {
     phone,
   };
   contacts.push(newContact);
+  await updateListContact(contacts);
   return newContact;
+};
+
+const updateListContactById = async (contactId, data) => {
+  const contacts = await contactDate();
+  const index = contacts.findIndex((item) => item.id === contactId);
+  if (index === -1) {
+    return null;
+  }
+  contacts[index] = { ...contacts[index], ...data };
+  await updateListContact(contacts);
+  return contacts[index];
 };
 
 export default {
@@ -60,4 +72,5 @@ export default {
   removeContact,
   addContact,
   updateListContact,
+  updateListContactById,
 };
