@@ -6,7 +6,7 @@ import { HttpError } from "../helpers/index.js";
 
 const getAll = async (req, res) => {
   const result = await Contact.find({}, "-createdAt -updatedAt");
-  res.json(result);
+  return res.json(result);
 };
 
 const getById = async (req, res) => {
