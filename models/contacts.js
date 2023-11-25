@@ -1,19 +1,62 @@
-const listContacts = async () => {};
+import { Schema, model } from "mongoose";
+import Joi from "joi";
 
-const getContactById = async (contactId) => {};
+import { handleSaveError, preUpdate } from "./hooks.js";
 
-const removeContact = async (contactId) => {};
+const genreList = ["fantastic", "love story"];
+const releaseYearRegexp = /^\d{4}$/;
 
-const addContact = async (body) => {};
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
 
-const updateContact = async (contactId, body) => {};
+contactSchema.post("save", handleSaveError);
 
-module.exports = {};
+contactSchema.pre("findOneAndUpdate", preUpdate);
 
-export default {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-};
+contactSchema.post("findOneAndUpdate", handleSaveError);
+
+export const contactAddSchema = Joi.object({
+  title: Joi.string().required().messages({
+    "any.required": `"title" must be exist`,
+    "string.base": `"title" must be text`,
+  }),
+  director: Joi.string().required(),
+  favorite: Joi.boolean(),
+  genre: Joi.string()
+    .valid(...genreList)
+    .required(),
+  releaseYear: Joi.string().pattern(releaseYearRegexp).required(),
+});
+
+export const contactUpdateSchema = Joi.object({
+  title: Joi.string(),
+  director: Joi.string(),
+  favorite: Joi.boolean(),
+  genre: Joi.string().valid(...genreList),
+  releaseYear: Joi.string().pattern(releaseYearRegexp),
+});
+
+export const contactFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
+const Contact = model("contact", contactSchema);
+
+export default Contact;
