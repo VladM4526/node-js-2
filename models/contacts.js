@@ -33,16 +33,15 @@ contactSchema.pre("findOneAndUpdate", preUpdate);
 contactSchema.post("findOneAndUpdate", handleSaveError);
 
 export const contactAddSchema = Joi.object({
-  title: Joi.string().required().messages({
-    "any.required": `"title" must be exist`,
-    "string.base": `"title" must be text`,
+  name: Joi.string().required().messages({
+    "any.required": `name must be exist`,
   }),
-  director: Joi.string().required(),
-  favorite: Joi.boolean(),
-  genre: Joi.string()
-    .valid(...genreList)
-    .required(),
-  releaseYear: Joi.string().pattern(releaseYearRegexp).required(),
+  email: Joi.string().required().messages({
+    "any.required": `email must be exist`,
+  }),
+  phone: Joi.string().required().messages({
+    "any.required": `phone must be exist`,
+  }),
 });
 
 export const contactUpdateSchema = Joi.object({
