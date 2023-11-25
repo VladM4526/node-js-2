@@ -1,11 +1,10 @@
 import express from "express";
 
-import contactsController from "../../controllers/controllers.js";
-
 import { isEmptyBody, isValidId } from "../../middlewares/index.js";
 
 import { validateBody } from "../../decorators/index.js";
 
+import contactsController from "../../controllers/contact-controllers.js";
 import {
   contactAddSchema,
   contactUpdateSchema,
@@ -22,7 +21,7 @@ contactRouter.post(
   "/",
   isEmptyBody,
   validateBody(contactAddSchema),
-  contactRouter.add
+  contactsController.add
 );
 
 contactRouter.put(

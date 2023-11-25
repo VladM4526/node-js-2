@@ -3,9 +3,6 @@ import Joi from "joi";
 
 import { handleSaveError, preUpdate } from "./hooks.js";
 
-const genreList = ["fantastic", "love story"];
-const releaseYearRegexp = /^\d{4}$/;
-
 const contactSchema = new Schema(
   {
     name: {
@@ -23,7 +20,7 @@ const contactSchema = new Schema(
       default: false,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
 
 contactSchema.post("save", handleSaveError);
@@ -45,17 +42,13 @@ export const contactAddSchema = Joi.object({
 });
 
 export const contactUpdateSchema = Joi.object({
-  title: Joi.string(),
-  director: Joi.string(),
+  name: Joi.string(),
+  email: Joi.string(),
   favorite: Joi.boolean(),
-  genre: Joi.string().valid(...genreList),
-  releaseYear: Joi.string().pattern(releaseYearRegexp),
 });
 
 export const contactFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
-const Contact = model("contacts", contactSchema);
-
-export default Contact;
+export const Contact = model("contact", contactSchema);
