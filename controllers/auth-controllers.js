@@ -12,7 +12,7 @@ const { JWT_SECRET } = process.env;
 const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (user) {
+  if (!user) {
     throw HttpError(409, "Email already exist");
   }
 
