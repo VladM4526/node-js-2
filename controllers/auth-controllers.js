@@ -12,7 +12,7 @@ const { JWT_SECRET } = process.env;
 const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) {
+  if (user) {
     throw HttpError(409, "Email already exist");
   }
 
@@ -42,6 +42,7 @@ const signin = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
     token,
@@ -70,5 +71,5 @@ export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
-  signout: ctrlWrapper(signout)
+  signout: ctrlWrapper(signout),
 };
