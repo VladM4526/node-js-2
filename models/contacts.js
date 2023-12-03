@@ -35,9 +35,6 @@ contactSchema.pre("findOneAndUpdate", preUpdate);
 contactSchema.post("findOneAndUpdate", handleSaveError);
 
 export const contactAddSchema = Joi.object({
-  name: Joi.string().required().messages({
-    "any.required": `name must be exist`,
-  }),
   email: Joi.string().required().messages({
     "any.required": `email must be exist`,
   }),
@@ -47,7 +44,6 @@ export const contactAddSchema = Joi.object({
 });
 
 export const contactUpdateSchema = Joi.object({
-  name: Joi.string(),
   email: Joi.string(),
   favorite: Joi.boolean(),
 });

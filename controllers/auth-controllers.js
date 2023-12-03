@@ -15,26 +15,27 @@ const signup = async (req, res) => {
   if (user) {
     throw HttpError(409, "Email already exist");
   }
-
-  const hashPassword = await bcrypt.hash(password, 10);
-
-  const newUser = await User.create({ ...req.body, password: hashPassword });
-
+  const hashPass = await bcrypt.hash(password, 10);
+  const newUser = await User.create({ ...req.body, password: hashPass });
   res.status(201).json({
-    username: newUser.username,
-    email: newUser.email,
+    user: {
+      email: newUser.email,
+      password: newUser.password,
+    },
   });
 };
 
-const signin = async (req, res) => {
+const signin = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
+
   const passwordCompare = await bcrypt.compare(password, user.password);
+
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const payload = {
@@ -43,17 +44,19 @@ const signin = async (req, res) => {
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
-
   res.json({
     token,
+    user: {
+      email: user.email,
+      password: user.password,
+    },
   });
 };
 
 const getCurrent = async (req, res) => {
-  const { username, email } = req.user;
+  const { email } = req.user;
 
   res.json({
-    username,
     email,
   });
 };
