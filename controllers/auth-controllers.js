@@ -15,8 +15,9 @@ const signup = async (req, res) => {
   if (user) {
     throw HttpError(409, "Email already exist");
   }
-  const hashPass = await bcrypt.hash(password, 10);
+  const hashPass = await bcrypt.hash(password, 5);
   const newUser = await User.create({ ...req.body, password: hashPass });
+
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -45,25 +46,28 @@ const signin = async (req, res, next) => {
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
-    token,
     user: {
       email: user.email,
       password: user.password,
+      token,
     },
   });
 };
 
 const getCurrent = async (req, res) => {
-  const { email } = req.user;
+  const { email, password } = req.user;
 
   res.json({
-    email,
+    user: {
+      email: email,
+      password: password,
+    },
   });
 };
 
 const signout = async (req, res) => {
-  const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  const { id } = res.user;
+  await User.findByIdAndUpdate(id, { token: "" });
 
   res.json({
     message: "Signout success",
