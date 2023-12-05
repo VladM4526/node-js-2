@@ -1,14 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 import User from "../models/User.js";
-
 import { ctrlWrapper } from "../decorators/index.js";
-
 import { HttpError } from "../helpers/index.js";
 
-const { JWT_SECRET } = process.env;
 import "dotenv/config";
+const { JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -48,20 +45,17 @@ const signin = async (req, res, next) => {
   await User.findByIdAndUpdate(user._id, { token });
   res.json({
     user: {
-      email: user.email,
-      password: user.password,
       token,
     },
   });
 };
 
 const getCurrent = async (req, res) => {
-  const { email, password } = res.user;
+  const { email } = res.user;
 
   res.json({
     user: {
-      email: email,
-      password: password,
+      email,
     },
   });
 };
