@@ -8,6 +8,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 import { HttpError } from "../helpers/index.js";
 
 const { JWT_SECRET } = process.env;
+import "dotenv/config";
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -55,7 +56,7 @@ const signin = async (req, res, next) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { email, password } = req.user;
+  const { email, password } = res.user;
 
   res.json({
     user: {
@@ -66,8 +67,8 @@ const getCurrent = async (req, res) => {
 };
 
 const signout = async (req, res) => {
-  const { id } = res.user;
-  await User.findByIdAndUpdate(id, { token: "" });
+  const { _id } = res.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
 
   res.json({
     message: "Signout success",
