@@ -5,6 +5,7 @@ import User from "../models/User.js";
 import { ctrlWrapper } from "../decorators/index.js";
 import { HttpError } from "../helpers/index.js";
 import "dotenv/config";
+import Jimp from "jimp";
 import fs from "fs/promises";
 import path from "path";
 const avatarPath = path.resolve("public", "avatars");
@@ -80,11 +81,11 @@ const signout = async (req, res) => {
   });
 };
 
-const updAvatar = async (req, res) => {
-  if (!req.file) {
+const updAvatar = async (req, res, next) => {
+  if (res.file) {
     throw HttpError(400, "The avatar file is empty");
   }
-  const { _id } = req.user;
+  const { _id } = res.user;
   const { path: oldPath, filename } = req.file;
   const resizeAvatar = await Jimp.read(oldPath);
   await resizeAvatar.cover(250, 250).writeAsync(oldPath);
@@ -93,9 +94,7 @@ const updAvatar = async (req, res) => {
   await fs.rename(oldPath, newPath);
   const avatarURL = path.join("avatars", addUserFilename);
   await User.findByIdAndUpdate(_id, { avatarURL });
-  res.json({
-    avatarURL,
-  });
+  res.status(200).json({ avatarURL });
 };
 
 export default {

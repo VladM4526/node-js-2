@@ -19,7 +19,6 @@ const limits = {
 const upload = multer({
   storage,
   limits,
-  destination,
 });
 
 export default upload;
