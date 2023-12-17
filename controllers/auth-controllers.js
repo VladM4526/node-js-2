@@ -8,6 +8,7 @@ import "dotenv/config";
 import Jimp from "jimp";
 import fs from "fs/promises";
 import path from "path";
+import { nanoid } from "nanoid";
 const avatarPath = path.resolve("public", "avatars");
 
 const { JWT_SECRET } = process.env;
