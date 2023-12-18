@@ -46,23 +46,6 @@ const signup = async (req, res) => {
   });
 };
 
-const verify = async (req, res) => {
-  const { verificationCode } = req.params;
-  const user = await User.findOne({ verificationCode });
-  if (!user) {
-    throw HttpError(401, "Email not found");
-  }
-
-  await User.findByIdAndUpdate(user._id, {
-    verify: true,
-    verificationCode: "",
-  });
-
-  res.json({
-    message: "Email verify success",
-  });
-};
-
 const resendVerify = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -82,6 +65,26 @@ const resendVerify = async (req, res) => {
 
   res.json({
     message: "Email send success",
+  });
+};
+
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({ verificationToken });
+  if (!user) {
+    throw HttpError(401, "Email not found");
+  }
+
+  await User.updateOne(
+    { _id: user._id },
+    {
+      verify: true,
+      verificationToken: null,
+    }
+  );
+
+  res.json({
+    message: "Email verify success",
   });
 };
 
